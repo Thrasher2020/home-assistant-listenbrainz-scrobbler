@@ -6,8 +6,6 @@ Custom Home Assistant integration that submits listens from selected
 which emulates the ListenBrainz API so it can forward scrobbles to Last.fm,
 ListenBrainz, Maloja and the rest of its clients.
 
-It is independent of `lastfm_scrobbler` and does not modify it.
-
 ## Setup
 
 1. Copy/keep this folder at `custom_components/listenbrainz_scrobbler/`.
