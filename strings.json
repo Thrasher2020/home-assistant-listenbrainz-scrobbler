@@ -1,0 +1,75 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to multi-scrobbler",
+        "description": "Point this at a multi-scrobbler ListenBrainz endpoint. With the standard endpoint, enter the server URL only, for example `http://192.168.1.23:9078`.",
+        "data": {
+          "name": "Name",
+          "url": "Server URL",
+          "token": "Token"
+        },
+        "data_description": {
+          "url": "Base URL, for example http://192.168.1.23:9078. A full .../1/submit-listens or .../api/listenbrainz/<slug> URL also works.",
+          "token": "The token configured on the multi-scrobbler ListenBrainz endpoint. It is sent as 'Authorization: Token <token>'."
+        }
+      },
+      "behaviour": {
+        "title": "Scrobble settings",
+        "data": {
+          "players": "Media players",
+          "scrobble_percent": "Scrobble after",
+          "radio_min_seconds": "Radio scrobble after",
+          "now_playing": "Send now playing",
+          "strip_year": "Remove year from radio titles"
+        },
+        "data_description": {
+          "players": "Tick the Music Assistant or Sonos players you actually listen on. Pick one entity per physical speaker.",
+          "scrobble_percent": "Percentage of a track with a known duration that must play before it is scrobbled. Four minutes is used as an upper limit.",
+          "radio_min_seconds": "Radio tracks have no reliable duration, so they are scrobbled after this many seconds of playback.",
+          "now_playing": "Send a 'playing now' update when a track starts. This is separate from a scrobble.",
+          "strip_year": "When the source is radio, remove a trailing (89) or (1989) from the title, for example 'Lonely (89)' becomes 'Lonely'."
+        }
+      }
+    },
+    "error": {
+      "invalid_url": "Enter a full http:// or https:// URL.",
+      "invalid_token": "A token is required.",
+      "no_players": "Select at least one media player."
+    },
+    "abort": {
+      "already_configured": "This server and token are already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Scrobbler settings",
+        "data": {
+          "name": "Name",
+          "url": "Server URL",
+          "token": "Token",
+          "players": "Media players",
+          "scrobble_percent": "Scrobble after",
+          "radio_min_seconds": "Radio scrobble after",
+          "now_playing": "Send now playing",
+          "strip_year": "Remove year from radio titles"
+        },
+        "data_description": {
+          "url": "Base URL, for example http://192.168.1.23:9078. A full .../1/submit-listens or .../api/listenbrainz/<slug> URL also works.",
+          "token": "The token configured on the multi-scrobbler ListenBrainz endpoint. It is sent as 'Authorization: Token <token>'.",
+          "players": "Tick the Music Assistant or Sonos players you actually listen on. Pick one entity per physical speaker.",
+          "scrobble_percent": "Percentage of a track with a known duration that must play before it is scrobbled. Four minutes is used as an upper limit.",
+          "radio_min_seconds": "Radio tracks have no reliable duration, so they are scrobbled after this many seconds of playback.",
+          "now_playing": "Send a 'playing now' update when a track starts. This is separate from a scrobble.",
+          "strip_year": "When the source is radio, remove a trailing (89) or (1989) from the title, for example 'Lonely (89)' becomes 'Lonely'."
+        }
+      }
+    },
+    "error": {
+      "invalid_url": "Enter a full http:// or https:// URL.",
+      "invalid_token": "A token is required.",
+      "no_players": "Select at least one media player."
+    }
+  }
+}
