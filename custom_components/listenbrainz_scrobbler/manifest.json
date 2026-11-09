@@ -1,7 +1,7 @@
 {
   "domain": "listenbrainz_scrobbler",
   "name": "ListenBrainz Scrobbler",
-  "codeowners": [],
+  "codeowners": ["@Thrasher2020"],
   "config_flow": true,
   "documentation": "https://docs.multi-scrobbler.app/configuration/sources/listenbrainz-endpoint/",
   "issue_tracker": "https://github.com/Thrasher2020/home-assistant-listenbrainz-scrobbler/issues",
