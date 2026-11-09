@@ -11,7 +11,7 @@
         },
         "data_description": {
           "url": "Base URL, for example http://192.168.1.23:9078. A full .../1/submit-listens or .../api/listenbrainz/<slug> URL also works.",
-          "token": "The token configured on the multi-scrobbler ListenBrainz endpoint. It is sent as 'Authorization: Token <token>'."
+          "token": "The token configured on the multi-scrobbler ListenBrainz endpoint. It is sent as 'Authorization: Token YOUR_TOKEN'."
         }
       },
       "behaviour": {
@@ -57,7 +57,7 @@
         },
         "data_description": {
           "url": "Base URL, for example http://192.168.1.23:9078. A full .../1/submit-listens or .../api/listenbrainz/<slug> URL also works.",
-          "token": "The token configured on the multi-scrobbler ListenBrainz endpoint. It is sent as 'Authorization: Token <token>'.",
+          "token": "The token configured on the multi-scrobbler ListenBrainz endpoint. It is sent as 'Authorization: Token YOUR_TOKEN'.",
           "players": "Tick the Music Assistant or Sonos players you actually listen on. Pick one entity per physical speaker.",
           "scrobble_percent": "Percentage of a track with a known duration that must play before it is scrobbled. Four minutes is used as an upper limit.",
           "radio_min_seconds": "Radio tracks have no reliable duration, so they are scrobbled after this many seconds of playback.",
