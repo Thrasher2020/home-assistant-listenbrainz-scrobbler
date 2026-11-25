@@ -6,15 +6,32 @@ Custom Home Assistant integration that submits listens from selected
 which emulates the ListenBrainz API so it can forward scrobbles to Last.fm,
 ListenBrainz, Maloja and the rest of its clients.
 
+## Installation
+
+### HACS (recommended)
+
+1. Open **HACS → Integrations**.
+2. Search for **ListenBrainz Scrobbler** and select **Download**.
+3. **Restart Home Assistant** — integration code is only loaded at startup.
+
+If it is not in the list yet, add this repository as a custom repository first:
+**HACS → ⋮ → Custom repositories**, paste
+`https://github.com/Thrasher2020/home-assistant-listenbrainz-scrobbler`, choose
+**Integration**, then download it.
+
+### Manual
+
+1. Copy `custom_components/listenbrainz_scrobbler/` into your Home Assistant
+   `custom_components/` folder.
+2. **Restart Home Assistant**.
+
 ## Setup
 
-1. Copy/keep this folder at `custom_components/listenbrainz_scrobbler/`.
-2. **Restart Home Assistant** — integration code is only loaded at startup.
-3. Go to **Settings → Devices & Services → Add Integration** and search for
+1. Go to **Settings → Devices & Services → Add Integration** and search for
    **ListenBrainz Scrobbler**.
-4. Enter a name, the server URL and the token configured on the
+2. Enter a name, the server URL and the token configured on the
    multi-scrobbler ListenBrainz endpoint.
-5. On the next page tick the media players to watch and adjust the scrobble
+3. On the next page tick the media players to watch and adjust the scrobble
    settings.
 
 ## Server URL
