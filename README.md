@@ -8,7 +8,7 @@ ListenBrainz, Maloja and the rest of its clients.
 
 ## Installation
 
-### HACS (recommended)
+### Marketplace (recommended)
 
 1. Open **Settings → Marketplace**.
 2. Search for **ListenBrainz Scrobbler** and select **Download**.
