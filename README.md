@@ -10,7 +10,7 @@ ListenBrainz, Maloja and the rest of its clients.
 
 ### HACS (recommended)
 
-1. Open **HACS → Integrations**.
+1. Open **Settings → Marketplace**.
 2. Search for **ListenBrainz Scrobbler** and select **Download**.
 3. **Restart Home Assistant** — integration code is only loaded at startup.
 
