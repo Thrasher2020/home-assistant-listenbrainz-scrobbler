@@ -21,6 +21,7 @@ from homeassistant.helpers.event import (
 from homeassistant.util import dt as dt_util
 
 from .const import (
+    CONF_CHECK_ENTITIES,
     CONF_NOW_PLAYING,
     CONF_PLAYERS,
     CONF_RADIO_MIN_SECONDS,
@@ -86,6 +87,9 @@ class ListenBrainzScrobbler:
         self._submit_url = build_submit_url(config[CONF_URL])
         self._token = config[CONF_TOKEN]
         self._players: list[str] = list(config.get(CONF_PLAYERS) or [])
+        self._check_entities: list[str] = list(
+            config.get(CONF_CHECK_ENTITIES) or []
+        )
         self._scrobble_percent = float(
             config.get(CONF_SCROBBLE_PERCENT, DEFAULT_SCROBBLE_PERCENT)
         )
@@ -99,14 +103,15 @@ class ListenBrainzScrobbler:
 
     @callback
     def async_start(self) -> None:
-        """Start watching the configured players."""
+        """Start watching the configured players and condition entities."""
         if not self._players:
             _LOGGER.warning("No media players configured; nothing will be scrobbled")
             return
 
+        watched_entities = list(dict.fromkeys([*self._players, *self._check_entities]))
         self._unsubscribers.append(
             async_track_state_change_event(
-                self.hass, self._players, self._handle_state_event
+                self.hass, watched_entities, self._handle_state_event
             )
         )
         self._unsubscribers.append(
@@ -123,18 +128,82 @@ class ListenBrainzScrobbler:
         self._unsubscribers.clear()
         self._tracks.clear()
 
+    # --- entity conditions -------------------------------------------------
+
+    def _check_entities_allow_scrobbling(self) -> bool:
+        """Return True only when every configured entity condition is positive."""
+        for entity_id in self._check_entities:
+            state = self.hass.states.get(entity_id)
+            if state is None:
+                _LOGGER.debug(
+                    "Scrobbling blocked: check entity %s has no state", entity_id
+                )
+                return False
+
+            domain = entity_id.partition(".")[0]
+            if domain in ("switch", "input_boolean"):
+                expected_state = "on"
+            elif domain == "person":
+                expected_state = "home"
+            else:
+                _LOGGER.warning(
+                    "Scrobbling blocked: unsupported check entity %s", entity_id
+                )
+                return False
+
+            if state.state != expected_state:
+                _LOGGER.debug(
+                    "Scrobbling blocked: %s is %s (expected %s)",
+                    entity_id,
+                    state.state,
+                    expected_state,
+                )
+                return False
+
+            _LOGGER.debug(
+                "Scrobbling condition passed: %s is %s", entity_id, state.state
+            )
+
+        return True
+
     # --- event handling -------------------------------------------------
 
     @callback
     def _handle_state_event(self, event: Event) -> None:
-        """React to a player changing track, play state, or metadata."""
+        """React to player changes and changes to scrobbling conditions."""
         entity_id: str = event.data["entity_id"]
         new_state: State | None = event.data.get("new_state")
+
+        if entity_id in self._check_entities:
+            old_state: State | None = event.data.get("old_state")
+            if (
+                old_state is not None
+                and new_state is not None
+                and old_state.state == new_state.state
+            ):
+                return
+
+            # Clear tracked plays immediately when any condition becomes false.
+            if not self._check_entities_allow_scrobbling():
+                self._tracks.clear()
+                return
+
+            # Start tracking again immediately when all conditions become true.
+            for player_entity_id in self._players:
+                player_state = self.hass.states.get(player_entity_id)
+                if player_state is None:
+                    self._tracks.pop(player_entity_id, None)
+                else:
+                    self.hass.async_create_task(
+                        self._async_evaluate(player_entity_id, player_state)
+                    )
+            return
+
         if new_state is None:
             self._tracks.pop(entity_id, None)
             return
 
-        old_state: State | None = event.data.get("old_state")
+        old_state = event.data.get("old_state")
         if (
             old_state is not None
             and old_state.state == new_state.state
@@ -157,8 +226,14 @@ class ListenBrainzScrobbler:
 
     async def _async_evaluate(self, entity_id: str, state: State) -> None:
         """Update the tracked track for one player and scrobble when due."""
-        now = time.time()
         track = self._tracks.get(entity_id)
+
+        if not self._check_entities_allow_scrobbling():
+            # Do not keep a pending track while scrobbling is disabled.
+            self._tracks.pop(entity_id, None)
+            return
+
+        now = time.time()
 
         if state.state != STATE_PLAYING:
             if track is not None:
@@ -255,6 +330,8 @@ class ListenBrainzScrobbler:
         """Scrobble a track that ended just after crossing its threshold."""
         if track.scrobbled:
             return
+        if not self._check_entities_allow_scrobbling():
+            return
 
         # Fold in the time since the last check: a track can change between
         # ticks, and that final slice still counts towards the threshold.
@@ -298,6 +375,16 @@ class ListenBrainzScrobbler:
 
     async def _async_scrobble(self, track: _Track) -> None:
         """Submit one completed listen."""
+        if track.scrobbled:
+            return
+        if not self._check_entities_allow_scrobbling():
+            _LOGGER.debug(
+                "Not scrobbling '%s' by '%s': entity conditions are not met",
+                track.title,
+                track.artist,
+            )
+            return
+
         # Mark first: an HTTP timeout must not cause the same play to be sent
         # again on the next tick.
         track.scrobbled = True
@@ -324,6 +411,13 @@ class ListenBrainzScrobbler:
         """Send a playing-now update once per track."""
         if not self._now_playing or track.now_playing_sent:
             return
+        if not self._check_entities_allow_scrobbling():
+            _LOGGER.debug(
+                "Not sending now-playing for '%s': entity conditions are not met",
+                track.title,
+            )
+            return
+
         track.now_playing_sent = True
         await self._async_submit(
             "playing_now",

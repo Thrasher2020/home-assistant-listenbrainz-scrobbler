@@ -18,6 +18,7 @@
         "title": "Scrobble settings",
         "data": {
           "players": "Media players",
+          "check_entities": "Scrobbling conditions",
           "scrobble_percent": "Scrobble after",
           "radio_min_seconds": "Radio scrobble after",
           "now_playing": "Send now playing",
@@ -25,6 +26,7 @@
         },
         "data_description": {
           "players": "Tick the Music Assistant or Sonos players you actually listen on. Pick one entity per physical speaker.",
+          "check_entities": "Scrobbling is allowed only when every selected entity is positive: people must be home; switches and input booleans must be on. Leave empty to always allow scrobbling.",
           "scrobble_percent": "Percentage of a track with a known duration that must play before it is scrobbled. Four minutes is used as an upper limit.",
           "radio_min_seconds": "Radio tracks have no reliable duration, so they are scrobbled after this many seconds of playback.",
           "now_playing": "Send a 'playing now' update when a track starts. This is separate from a scrobble.",
@@ -50,6 +52,7 @@
           "url": "Server URL",
           "token": "Token",
           "players": "Media players",
+          "check_entities": "Scrobbling conditions",
           "scrobble_percent": "Scrobble after",
           "radio_min_seconds": "Radio scrobble after",
           "now_playing": "Send now playing",
@@ -59,6 +62,7 @@
           "url": "Base URL, for example http://192.168.1.23:9078. A full .../1/submit-listens or .../api/listenbrainz/YOUR_SLUG URL also works.",
           "token": "The token configured on the multi-scrobbler ListenBrainz endpoint. It is sent as 'Authorization: Token YOUR_TOKEN'.",
           "players": "Tick the Music Assistant or Sonos players you actually listen on. Pick one entity per physical speaker.",
+          "check_entities": "Scrobbling is allowed only when every selected entity is positive: people must be home; switches and input booleans must be on. Leave empty to always allow scrobbling.",
           "scrobble_percent": "Percentage of a track with a known duration that must play before it is scrobbled. Four minutes is used as an upper limit.",
           "radio_min_seconds": "Radio tracks have no reliable duration, so they are scrobbled after this many seconds of playback.",
           "now_playing": "Send a 'playing now' update when a track starts. This is separate from a scrobble.",
