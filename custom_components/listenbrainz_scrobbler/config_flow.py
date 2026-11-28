@@ -31,6 +31,7 @@ from homeassistant.helpers.selector import (
 )
 
 from .const import (
+    CONF_CHECK_ENTITIES,
     CONF_NOW_PLAYING,
     CONF_PLAYERS,
     CONF_RADIO_MIN_SECONDS,
@@ -109,6 +110,15 @@ def _behaviour_schema(
             vol.Required(
                 CONF_PLAYERS, default=current_players
             ): _player_selector(hass, current_players),
+            vol.Optional(
+                CONF_CHECK_ENTITIES,
+                default=defaults.get(CONF_CHECK_ENTITIES, []),
+            ): EntitySelector(
+                EntitySelectorConfig(
+                    domain=["person", "switch", "input_boolean"],
+                    multiple=True,
+                )
+            ),
             vol.Required(
                 CONF_SCROBBLE_PERCENT,
                 default=defaults.get(
